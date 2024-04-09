@@ -29,9 +29,12 @@
 #define SERVO_MAX_PULSEWIDTH 2000 //Maximum pulse width in microsecond
 #define SERVO_MAX_DEGREE 180 //Maximum angle in degree upto which servo can rotate
 
+// #define UNINITIALIZED_VALUE -999
 
+int32_t my_variable=1;
 
-
+int servo;
+int32_t new_initialized;
 
 
 #ifdef CONFIG_MICRO_ROS_ESP_XRCE_DDS_MIDDLEWARE
@@ -89,7 +92,7 @@ void service_callback(const void * req, void * res){
   
   
   
-   uint32_t angle, count, servo_request;
+   int32_t angle, count, servo_request;
    
    servo_request= (int) req_in->a ;
     //1. mcpwm gpio initialization
@@ -117,14 +120,53 @@ void service_callback(const void * req, void * res){
     }
         */
         
-         for (count =0; count < SERVO_MAX_DEGREE; count++) {
+  /*       for (count =0; count < SERVO_MAX_DEGREE; count++) {
           //  printf("Angle of rotation: %d\n", count);
           servo_request=servo_request+count;
             angle = servo_per_degree_init(servo_request);
           //  printf("pulse width: %dus\n", angle);
             mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, angle);
             vTaskDelay(100);     //Add delay, since it takes time for servo to rotate, generally 100ms/60degree rotation at 5V
+        } */
+        
+        
+        int32_t declared= (int) req_in->a ;
+//int32_t  servo_request; 
+//int counter= request
+ // new_initialized = 0;
+
+if (my_variable ==1) {
+  // Handle uninitialized case
+  new_initialized = 0; // Now initialized
+} else {
+  // Handle initialized case
+ // printf("my_variable is: %d\n", my_variable);
+}
+
+ for (new_initialized =new_initialized; new_initialized < declared; new_initialized++) {
+          //  printf("Angle of rotation: %d\n", count);
+          servo_request=  new_initialized;
+            angle = servo_per_degree_init(new_initialized);
+          //  printf("pulse width: %dus\n", angle);
+            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, angle);
+            vTaskDelay(10);     //Add delay, since it takes time for servo to rotate, generally 100ms/60degree rotation at 5V
+         my_variable=999;
         }
+        
+       
+         for (new_initialized =new_initialized; new_initialized >= declared; new_initialized--) {
+         
+        
+          //  printf("Angle of rotation: %d\n", count);
+          servo_request=new_initialized;
+            angle = servo_per_degree_init(new_initialized);
+          //  printf("pulse width: %dus\n", angle);
+            mcpwm_set_duty_in_us(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, angle);
+            vTaskDelay(10);     //Add delay, since it takes time for servo to rotate, generally 100ms/60degree rotation at 5V
+         //   count=0;
+         my_variable=999;
+        }
+        
     
 }
 
